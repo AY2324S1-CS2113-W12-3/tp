@@ -73,13 +73,14 @@ Step 2. The user executes `in part-time job /amount 500 /goal car` to create a t
 Step 3. So when the user executes `export`, it will get all the transactions that the program stored and exports to a CSV file using OpenCSV 
 
 ## Product scope
+
 ### Target user profile
 
-{Describe the target user profile}
+ Users who prefer a CLI interface over a GUI and want to better manage their finances to gauge their financial health.
 
 ### Value proposition
 
-{Describe the value proposition: what problem does it solve?}
+ FinText is a personal finance tracker to make it easy for users to track and manage their spending, and generate daily/weekly/monthly reports to break down how they spend (e.g. spending categories, whether they spend above their income, etc.)
 
 ## User Stories
 
