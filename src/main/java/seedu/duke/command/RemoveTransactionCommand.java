@@ -104,6 +104,4 @@ public class RemoveTransactionCommand extends Command {
         String msg = "Successfully remove " + transactionType + " no." + idx + ": " + description;
         ui.print(msg);
     }
-
-
 }

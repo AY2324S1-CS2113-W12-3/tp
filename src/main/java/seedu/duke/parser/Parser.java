@@ -4,6 +4,7 @@ import seedu.duke.command.AddExpenseCommand;
 import seedu.duke.command.AddIncomeCommand;
 import seedu.duke.command.CategoryCommand;
 import seedu.duke.command.Command;
+import seedu.duke.command.EditTransactionCommand;
 import seedu.duke.command.ExitCommand;
 import seedu.duke.command.GoalCommand;
 import seedu.duke.command.HelpCommand;
@@ -61,6 +62,8 @@ public class Parser {
             return new CategoryCommand(description, argsMap);
         case "goal":
             return new GoalCommand(description, argsMap);
+        case "edit":
+            return new EditTransactionCommand(description, argsMap);
         default:
             throw new DukeException("Sorry I do not understand your command");
         }
