@@ -11,6 +11,11 @@ import java.util.HashMap;
 
 public class EditTransactionCommand extends Command {
 
+    protected static final String AMOUNT_ARG = "amount";
+    protected static final String DESCRIPTION_ARG = "description";
+    protected static final String GOAL_ARG = "goal";
+    protected static final String DATE_ARG = "date";
+
     private static final String MISSING_IDX = "Index cannot be empty...";
     private static final String INVALID_IDX = "Please enter a valid index.";
     private static final String MISSING_TYPE = "Please indicate the transaction type.";
@@ -21,11 +26,6 @@ public class EditTransactionCommand extends Command {
     private static final String DATE_EDIT = "Can not edit Date...";
 
     private static final String ERROR_MSG = "Error encountered when editing transaction.";
-
-    protected static final String AMOUNT_ARG = "amount";
-    protected static final String DESCRIPTION_ARG = "description";
-    protected static final String GOAL_ARG = "goal";
-    protected static final String DATE_ARG = "date";
 
     public EditTransactionCommand(String description, HashMap<String, String> args) {
         super(description, args);
@@ -108,22 +108,18 @@ public class EditTransactionCommand extends Command {
                 newDescription = getArg(DESCRIPTION_ARG);
                 StateManager.getStateManager().getIncome(idx)
                         .getTransaction().setDescription(newDescription);
-            }
-
-            else if (!getArg(AMOUNT_ARG).isBlank()) {
+            } else if (!getArg(AMOUNT_ARG).isBlank()) {
                 newAmount = Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG));
                 StateManager.getStateManager().getIncome(idx)
                         .getTransaction().setAmount(newAmount);
-            }
-
-            else if (!getArg(GOAL_ARG).isBlank()) {
+            } else if (!getArg(GOAL_ARG).isBlank()) {
                 newGoalDescription = getArg(GOAL_ARG);
                 StateManager.getStateManager().getIncome(idx)
                         .getGoal().setDescription(newGoalDescription);;
             }
             
             Income editedIncome = StateManager.getStateManager().getIncome(idx);
-            isSuccess = !(editedIncome == income) ? true : false;
+            isSuccess = !(editedIncome == income);
 
         } else if (type.equals("out")) {
             Expense expense = StateManager.getStateManager().getExpense(idx);
@@ -133,16 +129,14 @@ public class EditTransactionCommand extends Command {
                 newDescription = getArg(DESCRIPTION_ARG);
                 StateManager.getStateManager().getExpense(idx)
                         .getTransaction().setDescription(newDescription);
-            }
-
-            else if (!getArg(AMOUNT_ARG).isBlank()) {
+            } else if (!getArg(AMOUNT_ARG).isBlank()) {
                 newAmount = Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG));
                 StateManager.getStateManager().getExpense(idx)
                         .getTransaction().setAmount(newAmount);
             }
             
             Expense editedExpense = StateManager.getStateManager().getExpense(idx);
-            isSuccess = !(editedExpense == expense) ? true : false;
+            isSuccess = !(editedExpense == expense);
         }
         if (!isSuccess) {
             throw new DukeException(ERROR_MSG);
