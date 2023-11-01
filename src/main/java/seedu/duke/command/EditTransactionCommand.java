@@ -58,7 +58,7 @@ public class EditTransactionCommand extends Command {
             throw new DukeException(INVALID_TYPE);
         }
 
-        if (!getArg(DATE_ARG).isBlank()) {
+        if (getArg(DATE_ARG) != null && !getArg(DATE_ARG).isBlank()) {
             throw new DukeException(DATE_EDIT);
         }
 
@@ -70,7 +70,7 @@ public class EditTransactionCommand extends Command {
             throw new DukeException(TOO_MANY_ARGUMENTS);
         }
 
-        if (!getArg(AMOUNT_ARG).isBlank()) {
+        if (getArg(AMOUNT_ARG) != null && !getArg(AMOUNT_ARG).isBlank()) {
             Double amount = Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG));
             if (amount == null) {
                 throw new DukeException(BAD_AMOUNT);
@@ -89,11 +89,6 @@ public class EditTransactionCommand extends Command {
 
     private void editTransaction(Ui ui) throws DukeException {
         String type = getArg("type").toLowerCase();
-        String newDescription = "";
-        // Double newAmount = Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG));
-        Double newAmount = 0.0;
-        String newGoalDescription = "";
-
         int maxSize = getTransactionMaxSize(type);
         int idx = parseIdx(maxSize) - 1; //-1 due to 0 based indexing for arraylist
         assert idx >= 0 : "Index should be a valid integer greater than 0";
@@ -104,39 +99,42 @@ public class EditTransactionCommand extends Command {
             Income income = StateManager.getStateManager().getIncome(idx);
             transactionDescription = StateManager.getStateManager().getIncome(idx)
                     .getTransaction().getDescription();
-            if (!getArg(DESCRIPTION_ARG).isBlank()) {
-                newDescription = getArg(DESCRIPTION_ARG);
+            if (getArg(DESCRIPTION_ARG) != null && !getArg(DESCRIPTION_ARG).isBlank()) {
+                String originalDescription = income.getTransaction().getDescription();
                 StateManager.getStateManager().getIncome(idx)
-                        .getTransaction().setDescription(newDescription);
-            } else if (!getArg(AMOUNT_ARG).isBlank()) {
-                newAmount = Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG));
+                        .getTransaction().setDescription(getArg(DESCRIPTION_ARG));
+                String newDescription = income.getTransaction().getDescription();
+                isSuccess = !originalDescription.equals(newDescription);
+            } else if (getArg(AMOUNT_ARG) != null && !getArg(AMOUNT_ARG).isBlank()) {
+                Double originalAmount = income.getTransaction().getAmount();
                 StateManager.getStateManager().getIncome(idx)
-                        .getTransaction().setAmount(newAmount);
-            } else if (!getArg(GOAL_ARG).isBlank()) {
-                newGoalDescription = getArg(GOAL_ARG);
+                        .getTransaction().setAmount(Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG)));
+                Double newAmount = income.getTransaction().getAmount();
+                isSuccess = !originalAmount.equals(newAmount);
+            } else if (getArg(GOAL_ARG) != null && !getArg(GOAL_ARG).isBlank()) {
+                String originalGoalDescription = income.getGoal().getDescription();
                 StateManager.getStateManager().getIncome(idx)
-                        .getGoal().setDescription(newGoalDescription);;
+                        .getGoal().setDescription(getArg(GOAL_ARG));
+                String newGoalDescription = income.getGoal().getDescription();
+                isSuccess = !originalGoalDescription.equals(newGoalDescription);
             }
-            
-            Income editedIncome = StateManager.getStateManager().getIncome(idx);
-            isSuccess = !(editedIncome == income);
-
         } else if (type.equals("out")) {
             Expense expense = StateManager.getStateManager().getExpense(idx);
             transactionDescription = StateManager.getStateManager().getExpense(idx)
                     .getTransaction().getDescription();
-            if (!getArg(DESCRIPTION_ARG).isBlank()) {
-                newDescription = getArg(DESCRIPTION_ARG);
+            if (getArg(DESCRIPTION_ARG) != null && !getArg(DESCRIPTION_ARG).isBlank()) {
+                String originalDescription = expense.getTransaction().getDescription();
                 StateManager.getStateManager().getExpense(idx)
-                        .getTransaction().setDescription(newDescription);
-            } else if (!getArg(AMOUNT_ARG).isBlank()) {
-                newAmount = Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG));
+                        .getTransaction().setDescription(getArg(DESCRIPTION_ARG));
+                String newDescription = expense.getTransaction().getDescription();
+                isSuccess = !originalDescription.equals(newDescription);
+            } else if (getArg(AMOUNT_ARG) != null && !getArg(AMOUNT_ARG).isBlank()) {
+                Double originalAmount = expense.getTransaction().getAmount();
                 StateManager.getStateManager().getExpense(idx)
-                        .getTransaction().setAmount(newAmount);
+                        .getTransaction().setAmount(Parser.parseNonNegativeDouble(getArg(AMOUNT_ARG)));
+                Double newAmount = expense.getTransaction().getAmount();
+                isSuccess = !originalAmount.equals(newAmount);
             }
-            
-            Expense editedExpense = StateManager.getStateManager().getExpense(idx);
-            isSuccess = !(editedExpense == expense);
         }
         if (!isSuccess) {
             throw new DukeException(ERROR_MSG);
@@ -165,7 +163,7 @@ public class EditTransactionCommand extends Command {
     private void printSuccess(Ui ui, String description, int idx) {
         String type = getArg("type").toLowerCase();
         String transactionType = type.equals("in") ? "income" : "expense";
-        String msg = "Successfully edited " + transactionType + " no." + idx + description;
+        String msg = "Successfully edited " + transactionType + " no." + idx + " " + description;
         ui.print(msg);
     }
 }
