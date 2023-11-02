@@ -22,6 +22,9 @@ public class EditTransactionCommandTest {
     @BeforeEach
     void populateStateManager() {
         try {
+            parser.parse("goal /add car /amount 1000").execute(ui);
+            parser.parse("goal /add ps5 /amount 1000").execute(ui);
+
             parser.parse("in part-time job /amount 1000 /goal car /date 18092023").execute(ui);
             parser.parse("in allowance /amount 500 /goal car").execute(ui);
             parser.parse("in sell stuff /amount 50 /goal ps5").execute(ui);
